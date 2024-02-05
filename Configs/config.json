@@ -1,0 +1,34 @@
+{
+  "MODK": "LWIN",
+  "SECK": "LALT",
+
+  "EVENTS": {
+    "window_move_left": "MODK + LEFT",
+    "window_move_right": "MODK + RIGHT",
+    "align_window_to_center": "MODK + C",
+    "show_hide_taskbar_toggle": "ALTK + T",
+    "resize_focus_window": "MODK + Shift + R" // To exit the resizing mode, please press the ESCAPE key.
+  },
+  "LAYOUTS": {
+    "grid": "F1",
+    "flex": "F2",
+    "row": "F3",
+    "collum": "F4"
+  },
+
+
+
+
+
+  "SYS_INFO": {
+    "display_count": 1,
+    "frame_count": 1,
+    "resolutionX": 0,
+    "resolutionY": 0
+  },
+  "FRAME_SETTINGS": {
+    "padding": "5%",
+    "resize_step_verical": 0,
+    "resize_step_horizontal": 0
+  }
+}
