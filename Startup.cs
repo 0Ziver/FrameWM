@@ -9,6 +9,8 @@ namespace Frame
 {
     internal class Startup : IDisposable
     {
+        private const string iconPATH = "C:\\Users\\0_ziv\\RiderProjects\\FrameWM\\icons\\Tray.ico";
+        
         private static NotifyIcon notifyIcon;
         private static Executor executor;
 
@@ -39,7 +41,7 @@ namespace Frame
             ContextMenuStrip context = new();
             notifyIcon = new NotifyIcon();
             notifyIcon.Text = "Frame";
-            // notifyIcon.Icon = new Icon("F:\\repos\\.net\\Frame\\icons\\photo-frame.ico"); // ”кажите путь к вашей иконке
+            notifyIcon.Icon = new Icon(iconPATH);
             notifyIcon.Visible = true;
             notifyIcon.ContextMenuStrip = context;
 
