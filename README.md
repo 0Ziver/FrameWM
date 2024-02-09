@@ -1,5 +1,10 @@
 # FrameWM
-## ⚠️⚠️⚠️ This application is in the development phase. Changes may be made to its functionality. ⚠️⚠️⚠️
+
+
+<div style="background-color: rgba(101,104,115,0.5); padding: 10px;">
+<H3> ⚠️⚠️⚠️ This application is in the development phase. Changes may be made to its functionality. ⚠️⚠️⚠️
+</div>
+
 ## About
 
 **Frame is a fast window manager with extensive functionality.**
