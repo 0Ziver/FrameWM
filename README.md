@@ -1,8 +1,8 @@
 # FrameWM
 
 
-<div style="background-color: rgba(101,104,115,0.5); padding: 10px;">
-<H3> ⚠️⚠️⚠️ This application is in the development phase. Changes may be made to its functionality. ⚠️⚠️⚠️
+<div style="background-color: rgba(255,255,255,0.31); padding: 10px;">
+<H3 style="color: black"> ⚠️⚠️⚠️ This application is in the development phase. Changes may be made to its functionality. ⚠️⚠️⚠️
 </div>
 
 ## About
