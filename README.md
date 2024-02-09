@@ -32,3 +32,5 @@ In the future I plan to add:
 - **Variety of animations:** Several varieties of animated transitions.
 - **Customization:** Ability to block system-wide hotkeys for smooth operation.
 - **Low Level Interaction:** Interact with the system at a low level for efficient operation.
+
+![Frame](https://github.com/0Ziver/ForReadme/blob/b992da6c2e48fa65b3c9d764a2be73cf22b6a71b/Icons/FramePG.png)
