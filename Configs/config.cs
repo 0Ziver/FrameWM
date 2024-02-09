@@ -71,12 +71,12 @@ namespace Frame.Configs
         }
     }
 
-    internal struct ShortcutBlocklist
+    internal struct SystemShortcutBlocklist
     {
         public Hotkey[] Blocklist;
 
 
-        public ShortcutBlocklist()
+        public SystemShortcutBlocklist()
         {
             Blocklist =
             [

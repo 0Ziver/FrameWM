@@ -10,7 +10,7 @@ namespace Frame.Commands
         public static MoveWindowToCenter MWTC;
         public static MoveWindowToNext MWTN;
         public static SwitchLayout SL;
-        public static ThemeSwitcher TS;
+        public static ThemeSwitch TS;
 
         public CommandHolder()
         {
@@ -20,7 +20,7 @@ namespace Frame.Commands
             MWTC = new MoveWindowToCenter();
             MWTN = new MoveWindowToNext();
             SL = new SwitchLayout();
-            TS = new ThemeSwitcher();
+            TS = new ThemeSwitch();
         }
     }
 }

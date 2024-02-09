@@ -1,6 +1,7 @@
 ﻿/*using Frame.Helpers;
 using static Frame.Helpers.LibImports;
 using static Frame.Windows.WindowService;
+
 public interface IAnimation
 {
     WindowTransform Animate(float t, WindowTransform start, WindowTransform end);
@@ -109,14 +110,7 @@ public class Animator
 {
     public void Animate()
     {
-        *//*
-         * Когда открывается новое окно WindowService оборачивает его в класс Window
-         * - и присылает ивент в Compositor
-         * Compositor отправляет ивент сюда, о том, что нужно передвинуть окно и передает необходимый RECT.
-         * В Animator по ивенту в отдельном потоке из ThreadPool запускается короткий цикл, который 
-         *  - высчитывает анимацию и при каждом шаге дергает Move(){} класс Window. Получается плавная анимация
-         *  Когда Compositor присылает ивент, нужно прислать FPS. Что бы Animator обработал все с нужной частотой
-         *//*
+        
     }
 }
 
