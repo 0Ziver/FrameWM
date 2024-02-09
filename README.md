@@ -1,17 +1,8 @@
 # FrameWM
- 
+## ⚠️⚠️⚠️ This application is in the development phase. Changes may be made to its functionality. ⚠️⚠️⚠️
 ## About
 
 **Frame is a fast window manager with extensive functionality.**
-
-Padding is the indentation from the screen edges for all windows.
-<br>
-Gap is the distance between the edges of the windows
-<br>
-<br>
-[More on the basic parameters of a composer]()
-
-![Frame](https://github.com/0Ziver/ForReadme/blob/main/Icons/FramePG.png)
 
 ## Features:
 - **Window Arrangement:** Arrange windows in different sequences.
