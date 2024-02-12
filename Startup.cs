@@ -16,10 +16,7 @@ namespace Frame
 
         static void Main()
         {
-            new CommandHolder();
-            //new ProcessStateHook();
-            var a = new AliBaba();
-
+    
             InitializeNotifyIcon();
             executor = new Executor();
             executor.Add(

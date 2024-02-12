@@ -16,20 +16,6 @@ namespace Frame.Helpers
 
         public static void OpenKey()
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(taskbarPATH, true))
-            {
-                if(key != null)
-                {
-                    byte[] keyValue = (byte[])key.GetValue("Settings");
-
-                    if (keyValue != null && keyValue.Length > 8)
-                    {
-
-                        keyValue[8] = 3;
-                    }
-                    key.SetValue("Settings", value: keyValue);
-                }
-            }
         }
     }
 }

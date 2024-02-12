@@ -25,45 +25,6 @@ namespace Frame.Input
             Console.WriteLine("Keyboard INIT \n");
         }
 
-        private KeyCode IS_SYS_KEY_PRESSED()
-        {
-            if ((GetAsyncKeyState((int)KeyCode.LWIN) & 0x8000) != 0)
-            {
-                return KeyCode.LWIN;
-            }
-            if ((GetAsyncKeyState((int)KeyCode.RWIN) & 0x8000) != 0)
-            {
-                return KeyCode.RWIN;
-            }
-            if ((GetAsyncKeyState((int)KeyCode.LSHIFT) & 0x8000) != 0)
-            {
-                return KeyCode.LSHIFT;
-            }
-            if ((GetAsyncKeyState((int)KeyCode.RSHIFT) & 0x8000) != 0)
-            {
-                return KeyCode.RSHIFT;
-            }
-            if ((GetAsyncKeyState((int)KeyCode.LMENU) & 0x8000) != 0)
-            {
-                return KeyCode.LMENU;
-            }
-            if ((GetAsyncKeyState((int)KeyCode.RMENU) & 0x8000) != 0)
-            {
-                return KeyCode.RMENU;
-            }
-            if ((GetAsyncKeyState((int)KeyCode.LCONTROL) & 0x8000) != 0)
-            {
-                return KeyCode.LCONTROL;
-            }
-            if ((GetAsyncKeyState((int)KeyCode.RCONTROL) & 0x8000) != 0)
-            {
-                return KeyCode.RCONTROL;
-            }
-
-
-            return 0;
-        }
-
         private bool IS_MOD_KEY_PRESSED()
         {
             return (GetAsyncKeyState((int)KeyCode.LWIN) & 0x8000) != 0;

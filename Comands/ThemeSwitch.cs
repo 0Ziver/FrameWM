@@ -3,7 +3,7 @@ using static Frame.Helpers.LibImports;
 
 namespace Frame.Comands;
 
-public class ThemeSwitcher : ICommand
+public class ThemeSwitch : ICommand
 {
     private const int Light = 1;
     private const int Dark = 2;
