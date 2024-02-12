@@ -1,11 +1,7 @@
-﻿using Frame.Exec;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
-using Timer = System.Threading.Timer;
+﻿using Timer = System.Threading.Timer;
 
 namespace Frame.Helpers
 {
-    [Obsolete("Временно не используется. Пока что в проекте завязка на ивентах.")]
     public abstract class LTick : IDisposable
     {
         Timer timer;
