@@ -4,21 +4,18 @@ public partial class WindowService
 {
     public enum AnimationType
     {
-        LINEAR,
-        BEZIER,
-        HERMITE
-        
+        LINEAR
     }
     internal interface IAnimation
     {
-        WindowTransform Animate(float t, WindowTransform start, WindowTransform end);
+        Transform Animate(float t, Transform start, Transform end);
     }
 
     public class LinearAnimation : IAnimation
     {
-        public WindowTransform Animate(float t, WindowTransform start, WindowTransform end)
+        public Transform Animate(float t, Transform start, Transform end)
         {
-            return new WindowTransform
+            return new Transform
             {
                 X = (int)(start.X + t * (end.X - start.X)),
                 Y = (int)(start.Y + t * (end.Y - start.Y)),
@@ -28,18 +25,19 @@ public partial class WindowService
         }
     }
 
-    public class BezierAnimation : IAnimation
+    #region To be finalized
+    /*public class BezierAnimation : IAnimation
     {
-        private readonly WindowTransform _controlPoint1;
-        private readonly WindowTransform _controlPoint2;
+        private readonly Transform _controlPoint1;
+        private readonly Transform _controlPoint2;
 
-        public BezierAnimation(WindowTransform controlPoint1, WindowTransform controlPoint2)
+        public BezierAnimation(Transform controlPoint1, Transform controlPoint2)
         {
             this._controlPoint1 = controlPoint1;
             this._controlPoint2 = controlPoint2;
         }
 
-        public WindowTransform Animate(float t, WindowTransform start, WindowTransform end)
+        public Transform Animate(float t, Transform start, Transform end)
         {
             float u = 1 - t;
             float tt = t * t;
@@ -47,7 +45,7 @@ public partial class WindowService
             float uuu = uu * u;
             float ttt = tt * t;
 
-            return new WindowTransform
+            return new Transform
             {
                 X = (int)(uuu * start.X + 3 * uu * t * _controlPoint1.X + 3 * u * tt * _controlPoint2.X + ttt * end.X),
                 Y = (int)(uuu * start.Y + 3 * uu * t * _controlPoint1.Y + 3 * u * tt * _controlPoint2.Y + ttt * end.Y),
@@ -61,21 +59,21 @@ public partial class WindowService
 
     public class HermiteInterpolation : IAnimation
     {
-        private readonly WindowTransform _tangent1;
-        private readonly WindowTransform _tangent2;
+        private readonly Transform _tangent1;
+        private readonly Transform _tangent2;
 
-        public HermiteInterpolation(WindowTransform tangent1, WindowTransform tangent2)
+        public HermiteInterpolation(Transform tangent1, Transform tangent2)
         {
             _tangent1 = tangent1;
             _tangent2 = tangent2;
         }
 
-        public WindowTransform Animate(float t, WindowTransform start, WindowTransform end)
+        public Transform Animate(float t, Transform start, Transform end)
         {
             float t2 = t * t;
             float t3 = t2 * t;
 
-            return new WindowTransform
+            return new Transform
             {
                 X = (int)((2 * t3 - 3 * t2 + 1) * start.X +
                           (t3 - 2 * t2 + t) * _tangent1.X +
@@ -95,5 +93,6 @@ public partial class WindowService
                                (t3 - t2) * _tangent2.Height)
             };
         }
-    }
+    }*/
+    #endregion
 }

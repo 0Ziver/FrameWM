@@ -2,6 +2,7 @@
 using System.Text;
 using Frame.Exec;
 using Frame.Helpers;
+using Frame.Process;
 
 namespace Frame.Windows
 {
@@ -34,27 +35,27 @@ namespace Frame.Windows
                     LibImports.GetWindowThreadProcessId(process.MainWindowHandle, out uint lpdwProcessId);
                     System.Diagnostics.Process p = System.Diagnostics.Process.GetProcessById((int)lpdwProcessId);
                     if (p.ProcessName.Length > 0)
-                        WriteLog($"Changed focus on:{p.ProcessName}");
+                        WriteLog($"Changed focus on: {p.ProcessName}");
                     // Console.WriteLine($"Focus on: {p.ProcessName}");
                 }
             };
-
-            Process.ProcessService.ProcessTrace.PStart.OnNewProcessName += processName =>
+            ProcessService.ProcessTrace.PStart.OnProcessCreated += process =>
             {
-                WriteLog($"New Process: {processName}");
-                // Console.WriteLine(processName);
+                Console.WriteLine($"New process: {process.MainWindowTitle}");
+            };
+            ProcessService.ProcessTrace.PStop.OnProcessClosed += process =>
+            {
+                Console.WriteLine($"Process closed: {process.MainWindowTitle}");
             };
 
-            /*Process.ProcessService.ProcessTrace.PStart.OnNewProcessCreated += process =>
-            {
-                if (process != null)
-                {
-                    LibImports.GetWindowThreadProcessId(process.MainWindowHandle, out uint lpdwProcessId);
-                    System.Diagnostics.Process p = System.Diagnostics.Process.GetProcessById((int)lpdwProcessId);
-                    if (p.ProcessName.Length > 0)
-                        Console.WriteLine($"Create: {p.ProcessName}");
-                }
-            };*/
+            /*
+             * Если прилетает ивент о закрытии процесса(И у этого процесса есть окно и он содержится в списке окон),
+             * Отправляем ивент в композиор что бы он перестроил все остальные окна.
+             *
+             *
+             */
+
+
         }
 
         void WriteLog(string line)
@@ -62,6 +63,12 @@ namespace Frame.Windows
             File.WriteAllLines(filePath, new[] { line });
         }
 
+        
+        /*
+         * Что бы высчитать новый размер. Берем Все откртые окна *
+         *
+         * 
+         */
 
         private void Compose(WindowService.Window window)
         {
@@ -73,11 +80,9 @@ namespace Frame.Windows
                 height: CalculateNewSize().y);
                 */
 
-            var temp = new WindowService.WindowTransform(
-                x: 0,
-                y: 0,
+            var temp = new WindowService.Transform(y: 0,
                 width: 800,
-                height: 600);
+                height: 600, x: 0);
 
             window.TargetTransform = temp;
 

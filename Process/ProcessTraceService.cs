@@ -129,7 +129,8 @@ namespace Frame.Process
                 var process = System.Diagnostics.Process.GetProcessById(pid);
                 if (process.MainWindowHandle != IntPtr.Zero
                     && !DuplicateFilter.Contains(hwnd)
-                    && System.Diagnostics.Process.GetProcesses().All(p => p.Id != pid)) return null;
+                    && System.Diagnostics.Process.GetProcesses().All(p => p.Id != pid) &&
+                    process.MainWindowTitle.Length == 0) return null;
                 return process;
             }
         }
@@ -139,8 +140,8 @@ namespace Frame.Process
     {
         public class ProcessTrace
         {
-            [NotNull] public static Watcher PStart;
-            [NotNull] public static Watcher PStop;
+            public static Watcher PStart;
+            public static Watcher PStop;
 
             public ProcessTrace()
             {
@@ -159,8 +160,8 @@ namespace Frame.Process
                 }
 
 
-                public event Action<System.Diagnostics.Process> OnNewProcessCreated;
-                public event Action<string> OnNewProcessName;
+                public event Action<System.Diagnostics.Process?> OnProcessCreated;
+                public event Action<System.Diagnostics.Process?> OnProcessClosed;
 
                 private readonly ManagementEventWatcher _watcher;
 
@@ -168,7 +169,7 @@ namespace Frame.Process
                 public Watcher(string query)
                 {
                     _filter = new Filter();
-                    
+
                     var eventQuery = new WqlEventQuery(query);
                     try
                     {
@@ -188,15 +189,46 @@ namespace Frame.Process
                 {
                     if (e.NewEvent == null) return;
 
-                    var processName = Convert.ToString(e.NewEvent.Properties["ProcessID"].Value);
+                    /*var hwnd = System.Diagnostics.Process.GetProcessById(processId: process).MainWindowHandle;
+                    var postFilter = _filter.FilterProcesses(hwnd).MainWindowHandle;
+                    GetWindowThreadProcessId(postFilter, out int pid);
+                    System.Diagnostics.Process p = System.Diagnostics.Process.GetProcessById(pid);*/
 
-                  //  int process = Convert.ToInt32(e.NewEvent.Properties["ProcessName"].Value);
-                    Console.WriteLine(processName);
-                   // OnNewProcessName?.Invoke(processName);
-                    
-                  //  var process = System.Diagnostics.Process.GetProcessById(processId);
+                    // Console.WriteLine($"Start: {p.ProcessName}");
 
-                   // OnNewProcessCreated?.Invoke(_filter.FilterProcesses(process.MainWindowHandle)!);
+
+                    /*if (e.NewEvent.ClassPath.ClassName == "Win32_ProcessStartTrace")
+                    {
+                        var process = Convert.ToString(e.NewEvent.Properties["ProcessName"].Value);
+
+                        Console.WriteLine($"Start: {process}");
+                    }
+                    else if (e.NewEvent.ClassPath.ClassName == "Win32_ProcessStopTrace")
+
+                    {
+                        var process = Convert.ToString(e.NewEvent.Properties["ProcessName"].Value);
+
+                        Console.WriteLine($"Stop: {process}");
+                    }*/
+
+
+                    switch (e.NewEvent.ClassPath.ClassName)
+                    {
+                        case "Win32_ProcessStartTrace":
+                            
+                             Console.WriteLine($"Start: {GetProcess(e,"Win32_ProcessStartTrace")}");
+                          //  OnProcessCreated?.Invoke(_filter.FilterProcesses(hwnd));
+                            break;
+                        case "Win32_ProcessStopTrace":
+                            Console.WriteLine($"Start: {GetProcess(e,"Win32_ProcessStopTrace")}");
+                           // OnProcessClosed?.Invoke(_filter.FilterProcesses(hwnd));
+                            break;
+                    }
+                }
+
+                private string? GetProcess(EventArrivedEventArgs e,string _class)
+                {
+                    return e.NewEvent.ClassPath.ClassName == _class ? Convert.ToString(e.NewEvent.Properties["ProcessName"].Value) : "";
                 }
 
                 public void Dispose()

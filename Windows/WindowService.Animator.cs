@@ -18,7 +18,7 @@ public partial class WindowService
         {
             ThreadPool.QueueUserWorkItem(_ =>
             {
-                new WindowMover(AppSettings.AnimationType, window);
+                new Mover(AppSettings.AnimationType, window);
             });
         }
 
@@ -41,14 +41,14 @@ public partial class WindowService
         }
     }
 
-    public class WindowMover : LTick
+    public class Mover : LTick
     {
         private bool _isComplite;
         private AnimationType _animationType;
         private Window _window;
 
 
-        public WindowMover(AnimationType animationType, Window window)
+        public Mover(AnimationType animationType, Window window)
         {
             GC.KeepAlive(this);
             _animationType = animationType;
@@ -70,12 +70,6 @@ public partial class WindowService
                 case AnimationType.LINEAR:
                     animation = new LinearAnimation();
                     break;
-                case AnimationType.BEZIER:
-                 //   animation = new BezierAnimation();
-                    break;
-                case AnimationType.HERMITE:
-                   // animation = new HermiteInterpolation();
-                    break;
             }
             var la = new LinearAnimation();
             var temp = la.Animate(tick, _window.Transform, _window.TargetTransform);
@@ -89,7 +83,7 @@ public partial class WindowService
             if (!_isComplite) return;
             _tick += 10;
             Move(_tick);
-            if (_tick == 3000)
+            if (_tick >= 3000)
                 GC.SuppressFinalize(this);
         }
     }

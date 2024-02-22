@@ -12,6 +12,13 @@ namespace Frame.Windows
 
             public void Init()
             {
+                EnumWindows((hwnd, lParam) =>
+                {
+                    GetWindowThreadProcessId(hwnd, out int pid);
+                    var process = System.Diagnostics.Process.GetProcessById(pid);
+                    Cast(process);
+                    return true;
+                }, IntPtr.Zero);
             }
 
 
@@ -22,11 +29,9 @@ namespace Frame.Windows
                     hwnd: process.MainWindowHandle,
                     name: process.ProcessName,
                     pid: process.Id,
-                    transform: new WindowTransform(
-                        x: tempRect.Left,
-                        y: tempRect.Top,
+                    transform: new Transform(y: tempRect.Top,
                         width: tempRect.Right - tempRect.Left,
-                        height: tempRect.Bottom - tempRect.Top));
+                        height: tempRect.Bottom - tempRect.Top, x: tempRect.Left));
 
                 _windows.Add(window);
                 OnNewWindowReady(window);
