@@ -1,19 +1,16 @@
 {
-  "MODK": "LWIN",
-  "SECK": "LALT",
-
-  "EVENTS": {
+  "Commands": {
     "window_move_left": "MODK + LEFT",
     "window_move_right": "MODK + RIGHT",
     "align_window_to_center": "MODK + C",
     "show_hide_taskbar_toggle": "ALTK + T",
-    "resize_focus_window": "MODK + Shift + R" // To exit the resizing mode, please press the ESCAPE key.
+    "resize_focus_window": "MODK + Shift + R"
   },
   "LAYOUTS": {
     "grid": "F1",
     "flex": "F2",
     "row": "F3",
-    "collum": "F4"
+    "column": "F4"
   },
 
 

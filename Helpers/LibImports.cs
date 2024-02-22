@@ -6,33 +6,36 @@ namespace Frame.Helpers
     public static class LibImports
     {
         #region Delegates
+
         public delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
+
         /*____________________________________________________________________________________*/
         public delegate void WinEventDelegate(IntPtr hWinEventHook, uint eventType,
-       IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+            IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime);
+
         #endregion
 
 
-
         [Flags]
-        public enum SetWindowPosFlags : uint
+        public enum Swp : uint
         {
-            SWP_NOSIZE = 0x0001,
-            SWP_NOMOVE = 0x0002,
-            SWP_NOZORDER = 0x0004,
-            SWP_NOREDRAW = 0x0008,
-            SWP_NOACTIVATE = 0x0010,
-            SWP_FRAMECHANGED = 0x0020,
-            SWP_SHOWWINDOW = 0x0040,
-            SWP_HIDEWINDOW = 0x0080,
-            SWP_NOCOPYBITS = 0x0100,
-            SWP_NOOWNERZORDER = 0x0200,
-            SWP_NOSENDCHANGING = 0x0400,
-            SWP_DRAWFRAME = SWP_FRAMECHANGED,
-            SWP_NOREPOSITION = SWP_NOOWNERZORDER,
-            SWP_DEFERERASE = 0x2000,
-            SWP_ASYNCWINDOWPOS = 0x4000
+            NOSIZE = 0x0001,
+            NOMOVE = 0x0002,
+            NOZORDER = 0x0004,
+            NOREDRAW = 0x0008,
+            NOACTIVATE = 0x0010,
+            FRAMECHANGED = 0x0020,
+            SHOWWINDOW = 0x0040,
+            HIDEWINDOW = 0x0080,
+            NOCOPYBITS = 0x0100,
+            NOOWNERZORDER = 0x0200,
+            NOSENDCHANGING = 0x0400,
+            DRAWFRAME = FRAMECHANGED,
+            NOREPOSITION = NOOWNERZORDER,
+            DEFERERASE = 0x2000,
+            ASYNCWINDOWPOS = 0x4000
         }
+
         public enum WM : int
         {
             CLOSE = 0x0010,
@@ -42,6 +45,7 @@ namespace Frame.Helpers
             SC_RESTORE = 0xF120,
             SC_MAXIMIZE = 0xF030,
         }
+
         [StructLayout(LayoutKind.Sequential)]
         public struct RECT
         {
@@ -50,31 +54,43 @@ namespace Frame.Helpers
             public int Right;
             public int Bottom;
         }
-        public struct MONITORINFO
+
+        public struct MonitorInfo
         {
-            public int cbSize;
-            public RECT rcMonitor;
-            public RECT rcWork;
-            public uint dwFlags;
+            public int CbSize;
+            public RECT RcMonitor;
+            public RECT RcWork;
+            public uint DwFlags;
         }
 
-        public enum EVENT : uint
+        public interface IInterface
         {
-            EVENT_OBJECT_CREATE = 0x8000,
-            EVENT_OBJECT_DESTROY = 0x8001,
-            EVENT_OBJECT_SHOW = 0x8002,
-            EVENT_SYSTEM_FOREGROUND = 0x0003,
+            public const uint Create = 0x8000;
         }
-        public enum EVENT_CONTEXT : uint
+
+        public enum EventObject
+        {
+            CREATE = 0x8000,
+            DESTROY = 0x8001,
+            SHOW = 0x8002,
+            FOREGROUND = 0x0003,
+            MINIMIZEEND = 0x0016
+        }
+
+
+        [Flags]
+        public enum EventContext : uint
         {
             OUT = 0x0002,
             SKIPOWNPROCESS = 0x0001
         }
 
         #region USER32
+
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, [MarshalAs(UnmanagedType.Bool)] bool bRepaint);
+        public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight,
+            [MarshalAs(UnmanagedType.Bool)] bool bRepaint);
 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr OpenDesktop(string lpszDesktop, uint dwFlags, bool fInherit, uint dwDesiredAccess);
@@ -83,7 +99,7 @@ namespace Frame.Helpers
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool CloseDesktop(IntPtr hDesktop);
 
-    
+
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
@@ -94,7 +110,8 @@ namespace Frame.Helpers
 
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, SetWindowPosFlags uFlags);
+        public static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy,
+            Swp uFlags);
 
         [DllImport("user32.dll")]
         public static extern IntPtr SetWindowsHookEx(int idHook, Delegate lpfn, IntPtr hMod, uint dwThreadId);
@@ -105,7 +122,7 @@ namespace Frame.Helpers
 
         [DllImport("user32.dll")]
         public static extern IntPtr SetWinEventHook(uint eventMin, uint eventMax, IntPtr hmodWinEventProc,
-       WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
+            WinEventDelegate lpfnWinEventProc, uint idProcess, uint idThread, uint dwFlags);
 
         [DllImport("user32.dll")]
         public static extern bool UnhookWindowsHookEx(IntPtr hhk);
@@ -133,6 +150,7 @@ namespace Frame.Helpers
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern short GetAsyncKeyState(int vKey);
+
         [DllImport("user32.dll")]
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int processId);
 
@@ -157,9 +175,10 @@ namespace Frame.Helpers
 
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
+        public static extern bool GetMonitorInfo(IntPtr hMonitor, ref MonitorInfo lpmi);
 
         public delegate bool EnumWindowsDelegate(IntPtr hWnd, int lParam);
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool EnumWindows(EnumWindowsDelegate lpEnumFunc, IntPtr lParam);
 
@@ -168,8 +187,19 @@ namespace Frame.Helpers
 
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+
         #endregion
-        [DllImport("kernel32.dll")]
+
+        /*----------------------------------------------------------------------------------------------------*/
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
+
+        [DllImport("Kernel32.dll")]
+        public static extern IntPtr OpenProcess(uint dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+
+        /*----------------------------------------------------------------------------------------------------*/
+
+        [DllImport("Psapi.dll", CharSet = CharSet.Unicode)]
+        public static extern uint GetProcessImageFileName(IntPtr hProcess, StringBuilder lpImageFileName, uint nSize);
     }
 }

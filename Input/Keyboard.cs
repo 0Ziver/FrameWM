@@ -1,11 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Frame.Commands;
-using Frame.Helpers;
 using Frame.Exec;
 using Frame.Configs;
 using static Frame.Helpers.LibImports;
-using Frame.Windows;
+using static System.Diagnostics.Process;
 
 namespace Frame.Input
 {
@@ -22,7 +21,8 @@ namespace Frame.Input
         {
             _proc = HookCallback;
             _hookID = InstallHook(_proc);
-            Console.WriteLine("Keyboard INIT \n");
+            Console.WriteLine($@"{typeof(Keyboard)} is ready");
+
         }
 
         private bool IS_MOD_KEY_PRESSED()
@@ -35,7 +35,7 @@ namespace Frame.Input
         }
         private IntPtr InstallHook(LowLevelKeyboardProc proc)
         {
-            using ProcessModule? curModule = Process.GetCurrentProcess().MainModule;
+            using ProcessModule? curModule = GetCurrentProcess().MainModule;
             return SetWindowsHookEx((int)KEYBOARD_HOOKS.LL_REG, proc, GetModuleHandle(curModule.ModuleName), 0);
         }
         
@@ -88,17 +88,7 @@ namespace Frame.Input
         }
         private void Send(bool m = false, bool s = false, params KeyCode[] keys)
         {
-
-
-            if (s && keys.Contains(KeyCode.KEY_C))
-            {
-                Console.Clear();
-            }
-
-            if (s && keys.Contains(KeyCode.KEY_A))
-            {
-                CommandHolder.TS.Execute();
-            }
+            
             /* Console.WriteLine($" MOD: {m} \n SEC: {s} " +
                  $"\n K1: {(keys.Length > 0 ? keys[0] : KeyCode.EMPTY)} " +
                  $"\n K2: {(keys.Length > 1 ? keys[1] : KeyCode.EMPTY)} " +

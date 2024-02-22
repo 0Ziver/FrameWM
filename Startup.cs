@@ -1,33 +1,41 @@
-using Frame.Commands;
-using Frame.Configs;
 using Frame.Exec;
 using Frame.Helpers;
 using Frame.Input;
+using Frame.Time;
 using Frame.Windows;
+using System.Runtime.InteropServices;
 
 namespace Frame
 {
     internal class Startup : IDisposable
     {
-        private const string iconPATH = "C:\\Users\\0_ziv\\RiderProjects\\FrameWM\\icons\\Tray.ico";
-        
-        private static NotifyIcon notifyIcon;
-        private static Executor executor;
+        private const string IconPath = "C:\\Users\\0_ziv\\RiderProjects\\FrameWM\\icons\\Tray.ico";
 
+        private static NotifyIcon _notifyIcon;
+        private static Executor _executor;
         static void Main()
         {
-    
+
             InitializeNotifyIcon();
-            executor = new Executor();
-            executor.Add(
-                new Initializer(),
-                new WindowService(),
-                new ProcessTraceService(),
-                new Compositor(),
-                new Keyboard(),
-                new Interpreter());
-            executor.Initialization();
+            _executor = new Executor();
+            _executor.Add(
+                executors:
+                [
+                    new Initializer(),
+                    new Process.ProcessService(),
+                    new Compositor(),
+                    new Keyboard(),
+                    new Interpreter()
+                ]);
+            _executor.Initialization();
             Application.Run();
+        }
+
+
+        static int fortest()
+        {
+            new LocalTime();
+            return 0;
         }
 
         #region Tray
@@ -36,11 +44,11 @@ namespace Frame
         {
             // 
             ContextMenuStrip context = new();
-            notifyIcon = new NotifyIcon();
-            notifyIcon.Text = "Frame";
-            notifyIcon.Icon = new Icon(iconPATH);
-            notifyIcon.Visible = true;
-            notifyIcon.ContextMenuStrip = context;
+            _notifyIcon = new NotifyIcon();
+            _notifyIcon.Text = "Frame";
+            //   _notifyIcon.Icon = new Icon(IconPath);
+            _notifyIcon.Visible = true;
+            _notifyIcon.ContextMenuStrip = context;
 
 
             // 
@@ -62,15 +70,15 @@ namespace Frame
 
         private static void OnExit(object? sender, EventArgs e)
         {
-            notifyIcon.Dispose();
-            executor.OnExit();
+            _notifyIcon.Dispose();
+            _executor.OnExit();
             Application.Exit();
         }
 
         public void Dispose()
         {
-            notifyIcon.Dispose();
-            executor.OnExit();
+            _notifyIcon.Dispose();
+            _executor.OnExit();
         }
 
         #endregion

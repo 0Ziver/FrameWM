@@ -2,10 +2,7 @@
 
 namespace Frame.Configs
 {
-    public struct Hotkey(KeyCode f = 0, KeyCode s = 0, KeyCode k = 0)
+    public struct Hotkey(params int[] KEYS)
     {
-        public KeyCode ModFirst = f;
-        public KeyCode ModSecond = s;
-        public KeyCode Key = k;
     }
 }

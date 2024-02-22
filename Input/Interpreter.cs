@@ -7,7 +7,8 @@ namespace Frame.Input
         
         public void Init()
         {
-            
+            Console.WriteLine($@"{typeof(Interpreter)} is ready");
+
         }
     }
 }

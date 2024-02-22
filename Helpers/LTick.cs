@@ -4,30 +4,32 @@ namespace Frame.Helpers
 {
     public abstract class LTick : IDisposable
     {
-        Timer timer;
+        Timer _timer;
         public void Start()
         {
-            timer = new Timer(Loop, null, Timeout.Infinite, Timeout.Infinite);
-            timer?.Change(0, 16);
+            _timer = new Timer(Loop, null, Timeout.Infinite, Timeout.Infinite);
+            _timer?.Change(0, 10);
         }
 
         private void Stop()
         {
-            timer.Change(Timeout.Infinite, Timeout.Infinite);
+            _timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         private void Loop(object? state)
         {
             Tick();
         }
+
         /// <summary>
-        /// Invoke every 16ms
+        /// Invoke every 10ms
         /// </summary>
+        /// <param name="isReady"></param>
         protected abstract void Tick();
 
         public void Dispose()
         {
-            timer?.Dispose();
+            _timer?.Dispose();
         }
     }
 }
