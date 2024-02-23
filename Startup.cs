@@ -1,6 +1,7 @@
 using Frame.Exec;
 using Frame.Helpers;
 using Frame.Input;
+using Frame.Process;
 using Frame.Time;
 using Frame.Windows;
 using System.Runtime.InteropServices;
@@ -22,7 +23,7 @@ namespace Frame
                 executors:
                 [
                     new Initializer(),
-                    new Process.ProcessService(),
+                    new ProcessService.Behaviour(),
                     new Compositor(),
                     new Keyboard(),
                     new Interpreter()

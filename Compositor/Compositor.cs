@@ -28,7 +28,7 @@ namespace Frame.Windows
         {
             Console.WriteLine($@"{typeof(Compositor)} is ready");
 
-            Process.ProcessService.ProcessChangeState.OnChangeFocus += process =>
+            Process.ProcessService.WinEvents.OnChangeFocus += process =>
             {
                 if (process != null)
                 {
@@ -39,11 +39,11 @@ namespace Frame.Windows
                     // Console.WriteLine($"Focus on: {p.ProcessName}");
                 }
             };
-            ProcessService.ProcessTrace.PStart.OnProcessCreated += process =>
+            ProcessService.Trace.PStart.OnProcessCreated += process =>
             {
                 Console.WriteLine($"New process: {process.MainWindowTitle}");
             };
-            ProcessService.ProcessTrace.PStop.OnProcessClosed += process =>
+            ProcessService.Trace.PStop.OnProcessClosed += process =>
             {
                 Console.WriteLine($"Process closed: {process.MainWindowTitle}");
             };
