@@ -1,11 +1,11 @@
-﻿namespace Frame.Commands
+namespace Frame.Comands;
+
+public interface ICommand
 {
-    internal interface ICommand<T>
-    {
-        void Execute(T arg);
-    }
-    internal interface ICommand
-    {
-        void Execute();
-    }
+    void Invoke();
+}
+
+public interface ICommand<T>
+{
+    void Invoke(T arg);
 }

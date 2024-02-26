@@ -9,10 +9,11 @@ namespace Frame.Process
             public static event Action<System.Diagnostics.Process?> OnChangeFocus;
             public static event Action<System.Diagnostics.Process?> OnWindowCreate;
             public static event Action<System.Diagnostics.Process?> OnWindowMinimized;
-            private WinEvent 
-                _eF,
-                _eC,
-                _eM;
+
+            private WinEvent
+                _eFocus,
+                _eCreate,
+                _eMinimize;
 
             private Filter _filter;
 
@@ -21,40 +22,42 @@ namespace Frame.Process
                 _filter = new Filter();
 
                 #region WinEvents
+
                 /*----------------------------------------------------------------------------------------------------*/
-                _eF = new WinEvent(
+                _eFocus = new WinEvent(
                     (uint)EventObject.FOREGROUND,
                     (uint)EventObject.FOREGROUND,
                     (uint)EventContext.OUT,
                     out bool foreground);
-                _eF.OnNewEvent += hwnd =>
+                _eFocus.OnNewEvent += hwnd =>
                 {
                     if (!foreground) return;
                     OnChangeFocus?.Invoke(_filter.FilterProcesses(hwnd));
                 };
                 /*----------------------------------------------------------------------------------------------------*/
-                _eC = new WinEvent(
+                _eCreate = new WinEvent(
                     (uint)EventObject.CREATE,
                     (uint)EventObject.CREATE,
                     (uint)EventContext.OUT,
                     out bool create);
-                _eC.OnNewEvent += hwnd =>
+                _eCreate.OnNewEvent += hwnd =>
                 {
                     if (!create) return;
                     OnWindowCreate?.Invoke(_filter.FilterProcesses(hwnd));
                 };
                 /*----------------------------------------------------------------------------------------------------*/
-                _eM = new WinEvent(
+                _eMinimize = new WinEvent(
                     (uint)EventObject.MINIMIZEEND,
                     (uint)EventObject.MINIMIZEEND,
                     (uint)EventContext.OUT,
                     out bool minimized);
-                _eM.OnNewEvent += hwnd =>
+                _eMinimize.OnNewEvent += hwnd =>
                 {
                     if (!minimized) return;
                     OnWindowMinimized?.Invoke(_filter.FilterProcesses(hwnd));
                 };
                 /*----------------------------------------------------------------------------------------------------*/
+
                 #endregion
             }
         }
@@ -90,11 +93,12 @@ namespace Frame.Process
                 0,
                 0,
                 _dwFlags);
+            
             return _hook != IntPtr.Zero;
         }
 
         private void WinEventProc(IntPtr hWinEventHook, uint eventType,
-        IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
+            IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
             OnNewEvent.Invoke(hwnd);
         }
@@ -104,6 +108,4 @@ namespace Frame.Process
             UnhookWinEvent(_hook);
         }
     }
-
-
 }

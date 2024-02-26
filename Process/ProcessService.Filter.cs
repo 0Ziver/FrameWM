@@ -1,7 +1,7 @@
 ﻿namespace Frame.Process
 {
     using static Helpers.LibImports;
-    
+
     public partial class ProcessService
     {
         internal struct Filter
@@ -10,17 +10,30 @@
 
             public Filter()
             {
-                DuplicateFilter = new HashSet<IntPtr>(128);
+                DuplicateFilter = new HashSet<IntPtr>(2048);
             }
 
             public System.Diagnostics.Process? FilterProcesses(IntPtr hwnd)
             {
                 GetWindowThreadProcessId(hwnd, out int pid);
                 var process = System.Diagnostics.Process.GetProcessById(pid);
-                if (process.MainWindowHandle != IntPtr.Zero
-                    && !DuplicateFilter.Contains(hwnd)
-                    && System.Diagnostics.Process.GetProcesses().All(p => p.Id != pid) &&
-                    process.MainWindowTitle.Length == 0) return null;
+
+                RECT rect;
+                GetWindowRect(hwnd, out rect);
+                int width = rect.Right - rect.Left;
+                int height = rect.Bottom - rect.Top;
+
+                // Проверяем, что у процесса есть основное окно и его можно двигать
+                if (process.MainWindowHandle == IntPtr.Zero || !IsWindowVisible(hwnd))
+                    return null;
+
+                // Проверяем размер окна
+                if (width <= 50 || height <= 50)
+                    return null;
+                
+
+             
+
                 return process;
             }
         }

@@ -1,4 +1,6 @@
+using Frame.Helpers;
 using System.Management;
+using System.Runtime.InteropServices;
 
 namespace Frame.Process
 {
@@ -6,102 +8,72 @@ namespace Frame.Process
     {
         internal class Trace
         {
-            public static Watcher PStart;
-            public static Watcher PStop;
+            private const string stopQuery = "SELECT * FROM Win32_ProcessStopTrace";
+            private const string startQuery = "SELECT * FROM Win32_ProcessStartTrace";
+            public static event Action<System.Diagnostics.Process> OnProcessClose;
+            private HashSet<System.Diagnostics.Process> Processes = new(1024);
+
 
             public Trace()
             {
-                PStart = new Watcher(Watcher.WType.ProcessStartTrace);
-                PStop = new Watcher(Watcher.WType.ProcessStopTrace);
-            }
-
-            public class Watcher : IDisposable
-            {
-                private Filter _filter;
-
-                public struct WType
+                Shapshot();
+                var startProcessWatcher = new ProcessWatcher(startQuery, pid => { });
+                var stopProcessWatcher = new ProcessWatcher(stopQuery, pid =>
                 {
-                    public const string ProcessStartTrace = "SELECT * FROM Win32_ProcessStartTrace";
-                    public const string ProcessStopTrace = "SELECT * FROM Win32_ProcessStopTrace";
-                }
-
-
-                public event Action<System.Diagnostics.Process?> OnProcessCreated;
-                public event Action<System.Diagnostics.Process?> OnProcessClosed;
-
-                private readonly ManagementEventWatcher _watcher;
-
-
-                public Watcher(string query)
-                {
-                    _filter = new Filter();
-
-                    var eventQuery = new WqlEventQuery(query);
-                    try
+                    foreach (var process in Processes)
                     {
-                        using (_watcher = new ManagementEventWatcher(eventQuery))
+                        if (pid == process.Id)
                         {
-                            _watcher.EventArrived += Result;
-                            Task.Run(() => { _watcher.Start(); }).Wait();
+                            Console.WriteLine("Collision!");
                         }
                     }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                    }
-                }
+                });
+            }
 
-                private void Result(object sender, EventArrivedEventArgs e)
+            private void Shapshot()
+            {
+                var shanpshop = System.Diagnostics.Process.GetProcesses();
+                foreach (var process in shanpshop)
                 {
-                    if (e.NewEvent == null) return;
-
-                    /*var hwnd = System.Diagnostics.Process.GetProcessById(processId: process).MainWindowHandle;
-                    var postFilter = _filter.FilterProcesses(hwnd).MainWindowHandle;
-                    GetWindowThreadProcessId(postFilter, out int pid);
-                    System.Diagnostics.Process p = System.Diagnostics.Process.GetProcessById(pid);*/
-
-                    // Console.WriteLine($"Start: {p.ProcessName}");
-
-
-                    /*if (e.NewEvent.ClassPath.ClassName == "Win32_ProcessStartTrace")
-                    {
-                        var process = Convert.ToString(e.NewEvent.Properties["ProcessName"].Value);
-
-                        Console.WriteLine($"Start: {process}");
-                    }
-                    else if (e.NewEvent.ClassPath.ClassName == "Win32_ProcessStopTrace")
-
-                    {
-                        var process = Convert.ToString(e.NewEvent.Properties["ProcessName"].Value);
-
-                        Console.WriteLine($"Stop: {process}");
-                    }*/
-
-
-                    switch (e.NewEvent.ClassPath.ClassName)
-                    {
-                        case "Win32_ProcessStartTrace":
-                            var STRP = Convert.ToString(e.NewEvent.Properties["ProcessName"].Value);
-                            Console.WriteLine($"Start: {STRP}");
-                            //  OnProcessCreated?.Invoke(_filter.FilterProcesses(hwnd));
-                            break;
-                        case "Win32_ProcessStopTrace":
-                            var STPP = Convert.ToString(e.NewEvent.Properties["ProcessName"].Value);
-
-                            Console.WriteLine($"Stop: {STPP}");
-                            // OnProcessClosed?.Invoke(_filter.FilterProcesses(hwnd));
-                            break;
-                    }
+                    Processes.Add(process);
                 }
+            }
+        }
 
 
+        public class ProcessWatcher : IDisposable
+        {
+            private readonly Action<int> _action;
+            private readonly ManagementEventWatcher _watcher;
 
-                public void Dispose()
+            public ProcessWatcher(string query, Action<int> action)
+            {
+                _action = action;
+
+                var evQuery = new WqlEventQuery(query);
+                _watcher = new ManagementEventWatcher(evQuery);
+                _watcher.EventArrived += Result;
+
+                try
                 {
-                    _watcher.EventArrived -= Result;
-                    _watcher.Stop();
-                    _watcher.Dispose();
+                    _watcher.Start();
                 }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            }
+
+            private void Result(object sender, EventArrivedEventArgs e)
+            {
+                int name = Convert.ToInt32(e.NewEvent.Properties["ProcessID"].Value);
+                _action?.Invoke(name);
+            }
+
+            public void Dispose()
+            {
+                _watcher.EventArrived -= Result;
+                _watcher.Dispose();
             }
         }
     }

@@ -28,7 +28,7 @@ namespace Frame.Windows
         {
             Console.WriteLine($@"{typeof(Compositor)} is ready");
 
-            Process.ProcessService.WinEvents.OnChangeFocus += process =>
+            /*Process.ProcessService.WinEvents.OnChangeFocus += process =>
             {
                 if (process != null)
                 {
@@ -38,15 +38,13 @@ namespace Frame.Windows
                         WriteLog($"Changed focus on: {p.ProcessName}");
                     // Console.WriteLine($"Focus on: {p.ProcessName}");
                 }
-            };
-            ProcessService.Trace.PStart.OnProcessCreated += process =>
+            };*/
+
+            ProcessService.Trace.OnProcessClose += process =>
             {
-                Console.WriteLine($"New process: {process.MainWindowTitle}");
+                Console.WriteLine($"{process.ProcessName} is closed");
             };
-            ProcessService.Trace.PStop.OnProcessClosed += process =>
-            {
-                Console.WriteLine($"Process closed: {process.MainWindowTitle}");
-            };
+
 
             /*
              * Если прилетает ивент о закрытии процесса(И у этого процесса есть окно и он содержится в списке окон),
@@ -54,8 +52,6 @@ namespace Frame.Windows
              *
              *
              */
-
-
         }
 
         void WriteLog(string line)
@@ -63,11 +59,11 @@ namespace Frame.Windows
             File.WriteAllLines(filePath, new[] { line });
         }
 
-        
+
         /*
          * Что бы высчитать новый размер. Берем Все откртые окна *
          *
-         * 
+         *
          */
 
         private void Compose(WindowService.Window window)
@@ -102,6 +98,10 @@ namespace Frame.Windows
 
         private int CalculateGap()
         {
+            /*
+             * Вычести от прилегающей к другому окну стороный указанный gap
+             * У остальных сторон вычесть padding
+             */
             return 0;
         }
 
