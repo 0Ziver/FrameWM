@@ -1,8 +1,8 @@
 using Frame.Exec;
 
-namespace Frame.Process
+namespace Frame.ProcessSercive
 {
-    public partial class ProcessService
+    public partial class ProcessesSercive
     {
         public class Behaviour : IInit
         {

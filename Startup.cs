@@ -1,9 +1,10 @@
 using Frame.Exec;
 using Frame.Helpers;
 using Frame.Input;
-using Frame.Process;
+using Frame.ProcessSercive;
 using Frame.Time;
 using Frame.Windows;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Frame
@@ -14,8 +15,15 @@ namespace Frame
 
         private static NotifyIcon _notifyIcon;
         private static Executor _executor;
+        [DllImport("kernel32.dll")]
+        private static extern bool AllocConsole();
+
         static void Main()
         {
+            AllocConsole();
+
+            var cP = Process.GetCurrentProcess();
+            cP.PriorityClass = ProcessPriorityClass.High;
 
             InitializeNotifyIcon();
             _executor = new Executor();
@@ -23,7 +31,7 @@ namespace Frame
                 executors:
                 [
                     new Initializer(),
-                    new ProcessService.Behaviour(),
+                    new ProcessesSercive.Behaviour(),
                     new Compositor(),
                     new Keyboard(),
                     new Interpreter()

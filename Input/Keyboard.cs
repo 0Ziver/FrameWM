@@ -87,6 +87,10 @@ namespace Frame.Input
         }
         private void Send(bool m = false, bool s = false, params KeyCode[] keys)
         {
+            if(!m && s && keys[0] == KeyCode.KEY_Y)
+            {
+                Console.Clear();
+            }
             
             /* Console.WriteLine($" MOD: {m} \n SEC: {s} " +
                  $"\n K1: {(keys.Length > 0 ? keys[0] : KeyCode.EMPTY)} " +

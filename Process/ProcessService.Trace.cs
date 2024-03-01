@@ -1,41 +1,65 @@
-using Frame.Helpers;
+using System.Diagnostics;
 using System.Management;
-using System.Runtime.InteropServices;
 
-namespace Frame.Process
+namespace Frame.ProcessSercive
 {
-    public partial class ProcessService
+    using static Process;
+    public partial class ProcessesSercive
     {
         internal class Trace
         {
             private const string stopQuery = "SELECT * FROM Win32_ProcessStopTrace";
             private const string startQuery = "SELECT * FROM Win32_ProcessStartTrace";
-            public static event Action<System.Diagnostics.Process> OnProcessClose;
-            private HashSet<System.Diagnostics.Process> Processes = new(1024);
-
-
+            public static event Action<Process> OnProcessClose;
+            private HashSet<Process> Processes = new(4096);
+            private readonly Mutex mutex = new();
             public Trace()
             {
+
                 Shapshot();
-                var startProcessWatcher = new ProcessWatcher(startQuery, pid => { });
+
+
+                var _strF = new Filter();
+
+                var startProcessWatcher = new ProcessWatcher(startQuery, pid =>
+                {
+                    Processes.Add(_strF.FilterProcesses(processID: pid));
+                });
+
                 var stopProcessWatcher = new ProcessWatcher(stopQuery, pid =>
                 {
-                    foreach (var process in Processes)
+                    ThreadPool.QueueUserWorkItem(state =>
                     {
-                        if (pid == process.Id)
+                        var tempP = new List<Process>();
+
+                        mutex.WaitOne();
+                        tempP.AddRange(Processes.Where(process => process != null && process.Id == pid));
+                        foreach (var process in tempP)
                         {
-                            Console.WriteLine("Collision!");
+                            if (process != null)
+                            {
+                                OnProcessClose?.Invoke(process);
+                                Processes.Remove(process);
+                            }
                         }
-                    }
+                        mutex.ReleaseMutex();
+                    });
                 });
             }
 
+
             private void Shapshot()
             {
-                var shanpshop = System.Diagnostics.Process.GetProcesses();
+                var shanpshop = GetProcesses();
+                var _filter = new Filter();
+
                 foreach (var process in shanpshop)
                 {
-                    Processes.Add(process);
+                   // Console.WriteLine($"Unfiltered process = {process.ProcessName}");
+                    var p = _filter.FilterProcesses(processID: process.Id);
+                    if (p == null) return;
+                    Console.WriteLine($"Filtered process = {p.ProcessName}");
+                    Processes.Add(p);
                 }
             }
         }

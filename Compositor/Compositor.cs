@@ -1,8 +1,9 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics;
+using System.Numerics;
 using System.Text;
 using Frame.Exec;
 using Frame.Helpers;
-using Frame.Process;
+using Frame.ProcessSercive;
 
 namespace Frame.Windows
 {
@@ -28,43 +29,23 @@ namespace Frame.Windows
         {
             Console.WriteLine($@"{typeof(Compositor)} is ready");
 
-            /*Process.ProcessService.WinEvents.OnChangeFocus += process =>
-            {
-                if (process != null)
-                {
-                    LibImports.GetWindowThreadProcessId(process.MainWindowHandle, out uint lpdwProcessId);
-                    System.Diagnostics.Process p = System.Diagnostics.Process.GetProcessById((int)lpdwProcessId);
-                    if (p.ProcessName.Length > 0)
-                        WriteLog($"Changed focus on: {p.ProcessName}");
-                    // Console.WriteLine($"Focus on: {p.ProcessName}");
-                }
-            };*/
 
-            ProcessService.Trace.OnProcessClose += process =>
+            ProcessesSercive.Trace.OnProcessClose += process =>
             {
                 Console.WriteLine($"{process.ProcessName} is closed");
             };
-
-
-            /*
-             * Если прилетает ивент о закрытии процесса(И у этого процесса есть окно и он содержится в списке окон),
-             * Отправляем ивент в композиор что бы он перестроил все остальные окна.
-             *
-             *
-             */
+            ProcessesSercive.WinEvents.OnChangeFocus += pr =>
+            {
+                if (pr == null) return;
+                Console.WriteLine($"{pr.ProcessName} in Focus");
+            };
+            ProcessesSercive.WinEvents.OnWindowMinimized += minz =>
+            {
+                if (minz == null) return;
+                Console.WriteLine($"{minz.ProcessName} is Minimized");
+            };
         }
 
-        void WriteLog(string line)
-        {
-            File.WriteAllLines(filePath, new[] { line });
-        }
-
-
-        /*
-         * Что бы высчитать новый размер. Берем Все откртые окна *
-         *
-         *
-         */
 
         private void Compose(WindowService.Window window)
         {

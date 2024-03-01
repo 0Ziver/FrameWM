@@ -1,8 +1,8 @@
-namespace Frame.Process
+namespace Frame.ProcessSercive
 {
     using static Helpers.LibImports;
 
-    public partial class ProcessService
+    public partial class ProcessesSercive
     {
         internal class WinEvents
         {
